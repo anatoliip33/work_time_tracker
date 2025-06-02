@@ -5,8 +5,8 @@ defmodule WorkTimeTracker.Schemas.Card do
   @primary_key {:card_uid, Ecto.UUID, autogenerate: true}
 
   schema "cards" do
-    field :title, :string
-    belongs_to :user, WorkTimeTracker.Schemas.User, foreign_key: :user_id
+    field(:title, :string)
+    belongs_to(:user, WorkTimeTracker.Schemas.User, foreign_key: :user_id)
 
     timestamps()
   end

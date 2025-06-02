@@ -6,6 +6,9 @@ defmodule WorkTimeTracker.Schemas.User do
     field(:first_name, :string)
     field(:last_name, :string)
 
+    has_many(:cards, WorkTimeTracker.Schemas.Card)
+    has_many(:work_times, WorkTimeTracker.Schemas.WorkTime)
+
     timestamps()
   end
 
