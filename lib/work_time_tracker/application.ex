@@ -6,8 +6,7 @@ defmodule WorkTimeTracker.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: WorkTimeTracker.Worker.start_link(arg)
-      # {WorkTimeTracker.Worker, arg}
+      WorkTimeTracker.Repo
     ]
 
     opts = [strategy: :one_for_one, name: WorkTimeTracker.Supervisor]
