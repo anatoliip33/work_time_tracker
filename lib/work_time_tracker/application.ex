@@ -6,7 +6,8 @@ defmodule WorkTimeTracker.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      WorkTimeTracker.Repo
+      WorkTimeTracker.Repo,
+      WorkTimeTracker.Rpc.Server
     ]
 
     opts = [strategy: :one_for_one, name: WorkTimeTracker.Supervisor]

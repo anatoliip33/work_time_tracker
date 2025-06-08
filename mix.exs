@@ -27,7 +27,8 @@ defmodule WorkTimeTracker.MixProject do
     [
       {:ecto_sql, "~> 3.11"},
       {:postgrex, ">= 0.0.0"},
-      {:amqp, "~> 4.0"}
+      {:amqp, "~> 4.0"},
+      {:jason, "~> 1.4"}
     ]
   end
 
