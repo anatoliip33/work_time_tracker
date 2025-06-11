@@ -2,9 +2,8 @@ defmodule WorkTimeTracker.Repo.Migrations.CreateCards do
   use Ecto.Migration
 
   def change do
-    create_if_not_exists(table(:cards, primary_key: false)) do
-      add :card_uid, :uuid, primary_key: true, null: false
-      add :title, :string, null: false
+    create_if_not_exists(table(:cards)) do
+      add :card_uid, :uuid, null: false
       add :user_id, references(:users, on_delete: :delete_all), null: false
 
       timestamps()

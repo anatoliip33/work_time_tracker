@@ -30,21 +30,20 @@ defmodule WorkTimeTracker.Rpc.Server do
   @impl true
   def handle_info({:basic_deliver, payload, meta}, state) do
     # :timer.sleep(6000)
-    # Logger.debug("Received RPC request: #{inspect(meta)}")
-    IO.inspect(payload, label: "DEBUG: received RPC request payload")
+    # IO.inspect(meta, label: "SERVER [received] meta")
 
     %{reply_to: reply_to, correlation_id: correlation_id} = meta
 
     response =
-      with {:ok, %{"method" => method, "params" => params}} <- Jason.decode(payload) do
+      with {:ok, %{"method" => method, "params" => params}} <- JSON.decode(payload) do
         RpcRouter.route(method, params)
       else
         {:error, _} -> %{error: "Invalid JSON"}
       end
 
     publish_response(state.channel, reply_to, correlation_id, response)
-
     AMQP.Basic.ack(state.channel, meta.delivery_tag)
+
     {:noreply, state}
   end
 
@@ -57,8 +56,9 @@ defmodule WorkTimeTracker.Rpc.Server do
       channel,
       "",
       reply_to,
-      Jason.encode!(response),
-      correlation_id: correlation_id
+      JSON.encode!(response),
+      correlation_id: correlation_id,
+      content_type: "application/json"
     )
   end
 end

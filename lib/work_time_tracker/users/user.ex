@@ -1,4 +1,4 @@
-defmodule WorkTimeTracker.Schemas.User do
+defmodule WorkTimeTracker.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,8 +6,8 @@ defmodule WorkTimeTracker.Schemas.User do
     field(:first_name, :string)
     field(:last_name, :string)
 
-    has_many(:cards, WorkTimeTracker.Schemas.Card)
-    has_many(:work_times, WorkTimeTracker.Schemas.WorkTime)
+    has_many(:cards, WorkTimeTracker.Cards.Card)
+    has_many(:work_times, WorkTimeTracker.Schedulers.WorkTime)
 
     timestamps()
   end

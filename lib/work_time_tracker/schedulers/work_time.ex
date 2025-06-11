@@ -1,4 +1,4 @@
-defmodule WorkTimeTracker.Schemas.WorkTime do
+defmodule WorkTimeTracker.Schedulers.WorkTime do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -12,7 +12,7 @@ defmodule WorkTimeTracker.Schemas.WorkTime do
       default: :full_working_day
     )
 
-    belongs_to(:user, WorkTimeTracker.Schemas.User, foreign_key: :user_id)
+    belongs_to(:user, WorkTimeTracker.Users.User, foreign_key: :user_id)
   end
 
   def changeset(work_time, attrs) do
