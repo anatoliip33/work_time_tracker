@@ -7,6 +7,13 @@ defmodule WorkTimeTracker.Cards do
 
   alias WorkTimeTracker.Repo
   alias WorkTimeTracker.Cards.Card
+  alias WorkTimeTracker.Users.User
+
+  def create_user(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def add(params) do
     %Card{}

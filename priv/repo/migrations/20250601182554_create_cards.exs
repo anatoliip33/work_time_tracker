@@ -9,6 +9,7 @@ defmodule WorkTimeTracker.Repo.Migrations.CreateCards do
       timestamps()
     end
 
+    create(unique_index(:cards, [:card_uid]))
     create_if_not_exists(index(:cards, [:user_id]))
   end
 end

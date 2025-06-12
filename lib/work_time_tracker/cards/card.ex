@@ -13,6 +13,7 @@ defmodule WorkTimeTracker.Cards.Card do
     card
     |> cast(attrs, [:card_uid, :user_id])
     |> validate_required([:card_uid, :user_id])
+    |> unique_constraint(:card_uid)
     |> foreign_key_constraint(:user_id)
   end
 end

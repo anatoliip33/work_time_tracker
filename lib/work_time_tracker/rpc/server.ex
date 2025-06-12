@@ -2,6 +2,7 @@ defmodule WorkTimeTracker.Rpc.Server do
   use GenServer
   require Logger
 
+  # alias WorkTimeTracker.Rpc.RabbitmqConnection
   alias WorkTimeTracker.RpcRouter
 
   @nfc_rpc_queue "nfc_rpc_queue"

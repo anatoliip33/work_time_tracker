@@ -45,6 +45,12 @@ defmodule WorkTimeTracker.CardController do
          [_ | _] = cards <- Cards.get_cards_by_user(valid_params["user_id"]),
          {_, nil} <- Cards.delete_cards_by_user(valid_params["user_id"]) do
       %{user_id: cards}
+    else
+      [] ->
+        %{user_id: []}
+        
+      error ->
+        error
     end
   end
 
