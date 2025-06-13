@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+_build/
+deps/
+*.beam
+*.plt
+
+# Development files
+.elixir_ls/
+.vscode/
+.DS_Store
+
+# Documentation
+*.md
+doc/
+
+# Test files
+test/
+coveralls.json
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+priv/static/
+
