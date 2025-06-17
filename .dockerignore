@@ -17,9 +17,9 @@ deps/
 *.md
 doc/
 
-# Test files
-test/
-coveralls.json
+# # Test files
+# # test/
+# coveralls.json
 
 # Environment files
 .env

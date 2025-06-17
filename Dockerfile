@@ -1,31 +1,26 @@
-# Use the official Elixir image
-FROM elixir:1.18-alpine
+ARG ELIXIR_VERSION=1.18
 
-# Install build dependencies
-RUN apk add --no-cache build-base git
+FROM elixir:${ELIXIR_VERSION}-alpine AS base
 
-# Create app directory
+RUN apk add --no-cache build-base git postgresql-client
 WORKDIR /app
-
-# Install hex and rebar
-RUN mix local.hex --force && \
-    mix local.rebar --force
-
-# Copy mix files
+RUN mix local.hex --force && mix local.rebar --force
 COPY mix.exs mix.lock ./
+COPY config config
 
-# Install dependencies
+# Development image
+FROM base AS app
+ENV MIX_ENV=dev
 RUN mix deps.get
-
-# Copy application code
-COPY . .
-
-# Compile the application
 RUN mix compile
-
-# Expose port (if needed for future web interface)
 EXPOSE 4000
-
-# Default command
+COPY . .
 CMD ["mix", "run", "--no-halt"]
 
+# Test image
+FROM base AS test
+ENV MIX_ENV=test
+RUN mix deps.get
+RUN mix compile
+COPY . .
+CMD ["mix", "test"]

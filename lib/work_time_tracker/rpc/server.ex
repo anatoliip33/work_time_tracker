@@ -25,14 +25,16 @@ defmodule WorkTimeTracker.Rpc.Server do
     AMQP.Basic.qos(channel, prefetch_count: 10)
     AMQP.Basic.consume(channel, @nfc_rpc_queue, nil, no_ack: false)
 
+    IO.inspect(
+      "-----------> RPC Server started and listening on queue: #{@nfc_rpc_queue}",
+      label: "WorkTimeTracker.Rpc.Server"
+    )
+
     {:ok, %{channel: channel}}
   end
 
   @impl true
   def handle_info({:basic_deliver, payload, meta}, state) do
-    # :timer.sleep(6000)
-    # IO.inspect(meta, label: "SERVER [received] meta")
-
     %{reply_to: reply_to, correlation_id: correlation_id} = meta
 
     response =

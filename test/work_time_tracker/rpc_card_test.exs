@@ -52,7 +52,7 @@ defmodule WorkTimeTracker.RpcCardTest do
       assert response == %{"error" => %{"card_uid" => ["has already been taken"]}}
     end
 
-    test "/card/assign with invalid data returns error", %{user: user} do
+    test "/card/assign with invalid data returns error" do
       response = Client.call("/card/assign", %{
         "card_uid" => "invalid-uuid",
         "user_id" => nil
@@ -106,7 +106,7 @@ defmodule WorkTimeTracker.RpcCardTest do
       assert response == %{"user_id" => [card.card_uid]}
     end
 
-    test "/card/delete_all_by_user non existing user", %{user: user} do
+    test "/card/delete_all_by_user non existing user" do
       non_existent_user_id = 1001
 
       response = Client.call("/card/delete_all_by_user", %{"user_id" => non_existent_user_id})

@@ -1,18 +1,61 @@
 services:
+  # Work Time Tracker Application
+  app:
+    build:
+      context: .
+      target: app
+    environment:
+      - MIX_ENV=dev
+      - POSTGRES_HOST=postgres
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app_network
+    volumes:
+      - .:/app
+      - /app/deps
+      - /app/_build/dev
+    command: >
+      sh -c "mix ecto.setup &&
+             mix run --no-halt"
+    restart: unless-stopped
+
+  test:
+    build:
+      context: .
+      target: test
+    environment:
+      - MIX_ENV=test
+      - POSTGRES_HOST=postgres
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - test_network
+    command: >
+      sh -c "mix test"  
+
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: work_time_tracker_dev
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: work_time_dev
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
+      - test_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -26,42 +69,18 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"   # AMQP port
-      - "15672:15672" # Management UI
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - app_network
+      - test_network
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
+      interval: 10s
+      timeout: 5s
       retries: 3
-
-  # Work Time Tracker Application
-  app:
-    build: .
-    environment:
-      - MIX_ENV=dev
-      - POSTGRES_HOST=postgres
-      - RABBITMQ_HOST=rabbitmq
-    ports:
-      - "4000:4000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    volumes:
-      - .:/app
-      - /app/deps
-      - /app/_build
-    command: >
-      sh -c "mix ecto.setup &&
-             mix run --no-halt"
-    restart: unless-stopped
 
 volumes:
   postgres_data:
@@ -70,4 +89,6 @@ volumes:
 networks:
   app_network:
     driver: bridge
+  test_network:
+    driver: bridge  
 
