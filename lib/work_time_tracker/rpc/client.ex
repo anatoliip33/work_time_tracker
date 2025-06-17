@@ -35,10 +35,6 @@ defmodule WorkTimeTracker.Rpc.Client do
       )
 
       receive do
-        # n ->
-        #   AMQP.Connection.close(conn)
-        #   IO.inspect(n, label: "DEBUG: received message")
-
         {:basic_deliver, payload, %{correlation_id: ^correlation_id}} ->
           AMQP.Connection.close(conn)
           JSON.decode!(payload)

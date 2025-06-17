@@ -1,10 +1,6 @@
 import Config
 
-IO.inspect("Current environment!!!!!: #{config_env()}")
-
 if config_env() == :prod do
-  IO.inspect("Running in PROD environment!!!!!!!------------------>")
-
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """
@@ -18,16 +14,12 @@ if config_env() == :prod do
     socket_options: [:inet6]
 
   rabbitmq_url =
-    System.get_env("RABBITMQ_URL") ||
-      System.get_env("CLOUDAMQP_URL") ||
-      "amqp://guest:guest@rabbitmq:5672"
+    System.get_env("RABBITMQ_URL") || "amqp://guest:guest@rabbitmq:5672"
 
   config :work_time_tracker, :rabbitmq, url: rabbitmq_url
 end
 
 if config_env() == :dev do
-  IO.inspect("Running in DEV environment!!!!!!!------------------>")
-
   # Override database hostname for Docker
   if System.get_env("DATABASE_URL") do
     config :work_time_tracker, WorkTimeTracker.Repo,
@@ -54,9 +46,6 @@ if config_env() == :dev do
 end
 
 if config_env() == :test do
-  IO.inspect("Running in TEST environment!!!!!!!------------------>")
-  IO.inspect("SYSTEM------>#{System.get_env("DATABASE_URL")}")
-
   if System.get_env("DATABASE_URL") do
     config :work_time_tracker, WorkTimeTracker.Repo,
       url: System.get_env("DATABASE_URL"),

@@ -47,36 +47,80 @@ This is a work time tracking application built with Elixir. It utilizes PostgreS
 
 ## Running the Application
 
-To start the application:
-
-```bash
-mix run --no-halt
-```
-
-This will start the application supervisor, including the database connection and RPC server.
-
-## Running Tests
-
-To run the test suite:
-
-```bash
-mix test
-```
-
 ## Docker
 
-This project includes a `Dockerfile` and `docker-compose.yml` for containerization.
+This project includes Docker configuration for both development and testing environments.
 
-### Build and Run with Docker Compose
+### Docker Files Overview
 
-1. Build the Docker images:
+- `Dockerfile` - Multi-stage build for app and test environments
+- `docker-compose.yml` - Main application stack (app, PostgreSQL, RabbitMQ)
+- `docker-compose.test.yml` - Testing environment with isolated services
+
+### Running the Application with Docker
+
+1. **Start the application stack:**
 
    ```bash
-   docker compose build
+   docker-compose up
    ```
 
-2. Start the services (Postgres, RabbitMQ, and App):
+   This starts:
+   - Work Time Tracker application (http://localhost:4000)
+   - PostgreSQL database (localhost:5432)
+   - RabbitMQ with management UI (http://localhost:15672)
+
+2. **Run in background:**
 
    ```bash
-   docker compose up
+   docker-compose up -d
    ```
+
+3. **Stop the application:**
+
+   ```bash
+   docker-compose down
+   ```
+
+### Running Tests with Docker
+
+1. **Run tests once:**
+
+   ```bash
+   docker-compose -f docker-compose.test.yml run --rm test
+   ```
+
+2. **Build test image (if needed):**
+
+   ```bash
+   docker-compose -f docker-compose.test.yml build test
+   ```
+
+### Available Services
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| Application | http://localhost:4000 | - |
+| PostgreSQL | localhost:5432 | postgres/postgres |
+| RabbitMQ Management | http://localhost:15672 | guest/guest |
+| RabbitMQ (Test) | localhost:5673 | guest/guest |
+| PostgreSQL (Test) | localhost:5433 | postgres/postgres |
+
+### Development Workflow
+
+```bash
+# Start development environment
+docker-compose up -d
+
+# Run tests
+docker-compose -f docker-compose.test.yml run --rm test
+
+# View logs
+docker-compose logs -f app
+
+# Access running container
+docker-compose exec app sh
+
+# Clean up
+docker-compose down -v
+```

@@ -25,11 +25,6 @@ defmodule WorkTimeTracker.Rpc.Server do
     AMQP.Basic.qos(channel, prefetch_count: 10)
     AMQP.Basic.consume(channel, @nfc_rpc_queue, nil, no_ack: false)
 
-    IO.inspect(
-      "-----------> RPC Server started and listening on queue: #{@nfc_rpc_queue}",
-      label: "WorkTimeTracker.Rpc.Server"
-    )
-
     {:ok, %{channel: channel}}
   end
 
