@@ -118,8 +118,8 @@ docker-compose -f docker-compose.test.yml run --rm test
 # View logs
 docker-compose logs -f app
 
-# Access running container
-docker-compose exec app sh
+# Access iex shell in running container
+docker compose exec app iex -S mix
 
 # Clean up
 docker-compose down -v
