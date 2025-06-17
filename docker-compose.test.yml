@@ -1,11 +1,11 @@
 services:
-  # Work Time Tracker Application
-  app:
+  # Test Service
+  test:
     build:
       context: .
-      target: app
+      target: test
     environment:
-      - MIX_ENV=dev
+      - MIX_ENV=test
       - POSTGRES_HOST=postgres
       - RABBITMQ_HOST=rabbitmq
     depends_on:
@@ -14,48 +14,46 @@ services:
       rabbitmq:
         condition: service_healthy
     networks:
-      - app_network
+      - test_network
     volumes:
       - .:/app
       - /app/deps
-      - /app/_build/dev
+      - /app/_build/test
     command: >
-      sh -c "mix ecto.setup &&
-             mix run --no-halt"
-    restart: unless-stopped 
+      sh -c "mix test"
 
-  # PostgreSQL Database
+  # PostgreSQL Database for Testing
   postgres:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: work_time_dev
+      POSTGRES_DB: work_time_test
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Different port to avoid conflicts
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_test_data:/var/lib/postgresql/data
     networks:
-      - app_network
+      - test_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # RabbitMQ Message Broker
+  # RabbitMQ Message Broker for Testing
   rabbitmq:
     image: rabbitmq:4-management-alpine
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"  # Different port to avoid conflicts
+      - "15673:15672"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_test_data:/var/lib/rabbitmq
     networks:
-      - app_network
+      - test_network
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
@@ -63,9 +61,10 @@ services:
       retries: 3
 
 volumes:
-  postgres_data:
-  rabbitmq_data:
+  postgres_test_data:
+  rabbitmq_test_data:
 
 networks:
-  app_network:
+  test_network:
     driver: bridge
+
